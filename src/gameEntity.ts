@@ -10,6 +10,7 @@ export default abstract class GameEntity {
     forces: Vector[] = []
     ref: HTMLDivElement
 
+
     constructor(x: number, y: number, mass: number, isKinematic: boolean, elem: HTMLDivElement) {
         this.position = Vector.fromComponents(x, y)
         this.mass = mass
