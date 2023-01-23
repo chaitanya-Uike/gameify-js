@@ -4,36 +4,34 @@ import SphericalEntity from "./sphericalEntity";
 import { degreeToRadian } from "./utils";
 import Vector from "./vector";
 
-interface collisionDetails {
-    velocity1: Vector
-    velocity2: Vector
-}
-
-
-// TODO refactor this
 class PhysicsEngine {
-    getVelocityAfterCollision(entity1: GameEntity, entity2: GameEntity): collisionDetails {
+    nullVelocity: Vector = new Vector()
+
+    getVelocityAfterCollision(entity1: GameEntity, entity2: GameEntity): { velocity1: Vector, velocity2: Vector } {
+        const e1isRect = entity1 instanceof RectEntity
+        const e2isRect = entity2 instanceof RectEntity
+        const e1isSphere = entity1 instanceof SphericalEntity
+        const e2isShphere = entity2 instanceof SphericalEntity
+
         // not handling collision between RectEntities right now
-        if (entity1 instanceof SphericalEntity && entity2 instanceof RectEntity) {
-            const surfaceNormal = this.getCollisionNormal(entity1.getCenter().x, entity1.getCenter().y, entity2.position.x, entity2.position.y, entity2.width, entity2.height, entity2.rotation)
-            const velocity1 = this.bounce(surfaceNormal, entity1.velocity)
-
-            return { velocity1, velocity2: new Vector() }
-        } else if (entity1 instanceof RectEntity && entity2 instanceof SphericalEntity) {
-            const surfaceNormal = this.getCollisionNormal(entity2.getCenter().x, entity2.getCenter().y, entity1.position.x, entity1.position.y, entity1.width, entity1.height, entity1.rotation)
-
-            const velocity2 = this.bounce(surfaceNormal, entity2.velocity)
-
-            return { velocity2, velocity1: new Vector() }
-        } else if (entity1 instanceof SphericalEntity && entity2 instanceof SphericalEntity) {
-            console.log(3)
-            const velocity1 = this.twoDElasticCollision(entity1, entity2)
-            const velocity2 = this.twoDElasticCollision(entity2, entity1)
-
-            return { velocity1, velocity2 }
+        if (e1isSphere && e2isRect) {
+            const details = this.sphericalRectCollision(entity1, entity2)
+            return { velocity1: details.sphereVelocity, velocity2: details.rectVelocity }
+        } else if (e1isRect && e2isShphere) {
+            const details = this.sphericalRectCollision(entity2, entity1)
+            return { velocity1: details.rectVelocity, velocity2: details.sphereVelocity }
+        } else if (e1isSphere && e2isShphere) {
+            return this.spherical2DCollision(entity1, entity2)
         }
 
-        return { velocity1: new Vector(), velocity2: new Vector() }
+        return { velocity1: new Vector(), velocity2: this.nullVelocity }
+    }
+
+    sphericalRectCollision(sphere: SphericalEntity, rect: RectEntity): { sphereVelocity: Vector, rectVelocity: Vector } {
+        const surfaceNormal = this.getCollisionNormal(sphere.getCenter().x, sphere.getCenter().y, rect.position.x, rect.position.y, rect.width, rect.height, rect.rotation)
+        const sphereVelocity = this.bounce(surfaceNormal, sphere.velocity)
+
+        return { sphereVelocity, rectVelocity: this.nullVelocity }
     }
 
     bounce(surfaceNormal: Vector, velocity: Vector): Vector {
@@ -80,21 +78,35 @@ class PhysicsEngine {
         }
     }
 
-    twoDElasticCollision(entity1: SphericalEntity, entity2: SphericalEntity): Vector {
-        const m2 = 1
-        const m1 = 1
+    spherical2DCollision(entity1: SphericalEntity, entity2: SphericalEntity): { velocity1: Vector, velocity2: Vector } {
+        const xVelocityDiff = entity1.velocity.x - entity2.velocity.x;
+        const yVelocityDiff = entity1.velocity.y - entity2.velocity.y;
 
-        const x1 = entity1.getCenter()
-        const x2 = entity2.getCenter()
+        const xDist = entity2.getCenter().x - entity1.getCenter().x;
+        const yDist = entity2.getCenter().y - entity1.getCenter().y;
 
-        const v1 = entity1.velocity
-        const v2 = entity2.velocity
+        if (xVelocityDiff * xDist + yVelocityDiff * yDist >= 0) {
+            const angle = -Math.atan2(entity2.getCenter().y - entity1.getCenter().y, entity2.getCenter().x - entity1.getCenter().x);
 
-        const term1 = 2 * m2 / (m1 + m2)
-        const term2 = (v1.subtract(v2)).dot(x1.subtract(x2)) / (((x1.subtract(x2)).magnitude) ^ 2)
-        const term3 = x1.subtract(x2)
+            const m1 = 1;
+            const m2 = 1;
 
-        return term3.scalerMultiply(term1 * term2)
+            const u1 = entity1.velocity.rotate(angle)
+            const u2 = entity2.velocity.rotate(angle)
+
+            const v1 = Vector.fromComponents(u1.x * (m1 - m2) / (m1 + m2) + u2.x * 2 * m2 / (m1 + m2), u1.y)
+            const v2 = Vector.fromComponents(u2.x * (m1 - m2) / (m1 + m2) + u1.x * 2 * m2 / (m1 + m2), u2.y)
+
+
+            const velocity1 = v1.rotate(-angle)
+            const velocity2 = v2.rotate(-angle)
+
+
+            return { velocity1, velocity2 }
+        }
+
+        return { velocity1: entity1.velocity, velocity2: entity2.velocity }
+
     }
 }
 

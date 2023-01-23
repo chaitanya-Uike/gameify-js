@@ -72,4 +72,11 @@ export default class Vector {
     getResultant(vector: Vector): Vector {
         return Vector.fromComponents(this.x + vector.x, this.y + vector.y);
     }
+
+    rotate(angle: number): Vector {
+        const x = this.x * Math.cos(angle) - this.y * Math.sin(angle)
+        const y = this.x * Math.sin(angle) + this.y * Math.cos(angle)
+
+        return Vector.fromComponents(x, y)
+    }
 }

@@ -24,6 +24,13 @@ abstract class RectEntity extends GameEntity {
         this.position.y += this.velocity.y
         this.ref.style.transform = `translate(${this.position.x}px, ${this.position.y}px) rotate(${radianToDegree(this.rotation)}deg)`
     }
+
+    getCenter() {
+        const x = this.position.x + this.width / 2
+        const y = this.position.y + this.height / 2
+
+        return Vector.fromComponents(x, y)
+    }
 }
 
 export default RectEntity

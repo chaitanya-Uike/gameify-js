@@ -10,7 +10,7 @@ export default abstract class GameEntity {
         this.ref = elem
         this.velocity = velocity
         this.ref.style.position = "absolute"
-        this.ref.style.transformOrigin = "top left"
+        this.ref.style.transformOrigin = "center center"
         this.ref.style.transform = `translate(${this.position.x}px, ${this.position.y}px)`
     }
 

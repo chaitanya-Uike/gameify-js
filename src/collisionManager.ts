@@ -30,7 +30,6 @@ export default class CollisionManager {
                 else if (e1isSphere && e2isShphere) {
                     if (this.detectCollisionBetweenSpheres(entity1, entity2)) {
                         // dispatch event if present
-
                         const collisionDetails = this.physicsEngine.getVelocityAfterCollision(entity1, entity2)
 
                         entity1.velocity = collisionDetails.velocity1
@@ -46,7 +45,6 @@ export default class CollisionManager {
                     }
                 } else if (e1isSphere && e2isRect) {
                     if (this.detectCollisionBetweenRectAndSphere(entity2, entity1)) {
-                        console.log("here", entity1.getCenter())
                         const collisionDetails = this.physicsEngine.getVelocityAfterCollision(entity1, entity2)
 
                         entity1.velocity = collisionDetails.velocity1
@@ -78,26 +76,43 @@ export default class CollisionManager {
     detectCollisionBetweenRectAndSphere(rect: RectEntity, sphere: SphericalEntity) {
         const cx = sphere.getCenter().x
         const cy = sphere.getCenter().y
+        const cr = sphere.radius
 
         const rx = rect.position.x
         const ry = rect.position.y
-        const rw = rect.width
-        const rh = rect.height
+        const rcX = rect.getCenter().x
+        const rcY = rect.getCenter().y
 
-        let testX = cx
-        let testY = cy
+        // Rotate circle's center point back
+        const unrotatedCircleX = Math.cos(rect.rotation) * (cx - rcX) -
+            Math.sin(rect.rotation) * (cy - rcY) + rcX;
+        const unrotatedCircleY = Math.sin(rect.rotation) * (cx - rcX) +
+            Math.cos(rect.rotation) * (cy - rcY) + rcY;
 
-        if (cx < rx) testX = rx;
-        else if (cx > rx + rw) testX = rx + rw;
-        if (cy < ry) testY = ry;
-        else if (cy > ry + rh) testY = ry + rh;
+        // Closest point in the rectangle to the center of circle rotated backwards(unrotated)
+        let closestX, closestY;
 
-        const distX = cx - testX;
-        const distY = cy - testY;
-        const distance = Math.sqrt((distX * distX) + (distY * distY))
+        // Find the unrotated closest x point from center of unrotated circle
+        if (unrotatedCircleX < rx)
+            closestX = rx;
+        else if (unrotatedCircleX > rx + rect.width)
+            closestX = rx + rect.width;
+        else
+            closestX = unrotatedCircleX;
 
-        if (distance <= sphere.radius)
+        // Find the unrotated closest y point from center of unrotated circle
+        if (unrotatedCircleY < ry)
+            closestY = ry;
+        else if (unrotatedCircleY > ry + rect.height)
+            closestY = ry + rect.height;
+        else
+            closestY = unrotatedCircleY;
+
+        const distance = Math.sqrt((unrotatedCircleX - closestX) * (unrotatedCircleX - closestX) + (unrotatedCircleY - closestY) * (unrotatedCircleY - closestY))
+
+        if (distance <= cr)
             return true
+
         return false
     }
 
