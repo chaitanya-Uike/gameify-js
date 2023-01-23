@@ -13,6 +13,8 @@ abstract class SphericalEntity extends GameEntity {
 
         super(left, top, velocity, div)
         this.radius = radius
+
+        this.ref.style.transform = `translate(${this.position.x}px, ${this.position.y}px)`
     }
 
     getCenter(): Vector {

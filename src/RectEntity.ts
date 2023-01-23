@@ -17,6 +17,7 @@ abstract class RectEntity extends GameEntity {
         this.width = width
         this.height = height
         this.rotation = rotation
+        this.ref.style.transform = `translate(${this.position.x}px, ${this.position.y}px) rotate(${radianToDegree(this.rotation)}deg)`
     }
 
     updatePosition(): void {
