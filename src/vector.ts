@@ -33,6 +33,10 @@ export default class Vector {
         return Math.acos(N / D);
     }
 
+    getDistanceBetween(vector: Vector): number {
+        return this.subtract(vector).magnitude
+    }
+
     getNormalVector(): Vector {
         const normal = new Vector();
         normal.magnitude = this.magnitude;
