@@ -5,20 +5,16 @@ import PhysicsEngine from "./PhysicsEngine";
 
 export default class CollisionManager {
     physicsEngine: PhysicsEngine = new PhysicsEngine()
-    entities: GameEntity[]
     events: CollisionEvent[] = [];
 
-    constructor(entities: GameEntity[]) {
-        this.entities = entities
-    }
 
-    eventDispatcher() {
-        for (let i = 0; i < this.entities.length; i++) {
-            for (let j = i + 1; j < this.entities.length; j++) {
+    eventDispatcher(entities: GameEntity[]) {
+        for (let i = 0; i < entities.length; i++) {
+            for (let j = i + 1; j < entities.length; j++) {
                 let collisionDetected = false
 
-                const entity1 = this.entities[i]
-                const entity2 = this.entities[j]
+                const entity1 = entities[i]
+                const entity2 = entities[j]
 
                 const e1isRect = entity1 instanceof RectEntity
                 const e2isRect = entity2 instanceof RectEntity
