@@ -8,8 +8,8 @@ import Vector from "./vector"
 const playArea = document.querySelector(".playArea") as HTMLDivElement
 
 
-const playAreaWidth = 800
-const playAreaHeight = 600
+const playAreaWidth = 600
+const playAreaHeight = 400
 
 playArea.style.width = playAreaWidth + "px"
 playArea.style.height = playAreaHeight + "px"
@@ -50,8 +50,8 @@ addEntity(leftWall)
 
 
 const ball1 = new Ball(100, 200, 10, Vector.fromMagnitudeAndTheta(3, degreeToRadian(45)))
-const ball2 = new Ball(600, 80, 20, Vector.fromMagnitudeAndTheta(3, degreeToRadian(60)))
-const ball3 = new Ball(30, 30, 25, Vector.fromMagnitudeAndTheta(5, degreeToRadian(69)))
+const ball2 = new Ball(300, 80, 20, Vector.fromMagnitudeAndTheta(3, degreeToRadian(60)))
+const ball3 = new Ball(30, 30, 10, Vector.fromMagnitudeAndTheta(5, degreeToRadian(69)))
 
 
 addEntity(ball1)

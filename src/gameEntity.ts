@@ -15,4 +15,6 @@ export default abstract class GameEntity {
     }
 
     abstract updatePosition(): void
+
+    abstract getCenter(): Vector
 }

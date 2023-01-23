@@ -6,6 +6,7 @@ import PhysicsEngine from "./PhysicsEngine";
 export default class CollisionManager {
     physicsEngine: PhysicsEngine = new PhysicsEngine()
     entities: GameEntity[]
+    events: CollisionEvent[] = [];
 
     constructor(entities: GameEntity[]) {
         this.entities = entities
@@ -14,6 +15,8 @@ export default class CollisionManager {
     eventDispatcher() {
         for (let i = 0; i < this.entities.length; i++) {
             for (let j = i + 1; j < this.entities.length; j++) {
+                let collisionDetected = false
+
                 const entity1 = this.entities[i]
                 const entity2 = this.entities[j]
 
@@ -24,12 +27,12 @@ export default class CollisionManager {
 
                 if (e1isRect && e2isRect) {
                     if (this.detectCollisionBetweenRects(entity1, entity2)) {
-                        // dispatch event if present
+                        collisionDetected = true
                     }
                 }
                 else if (e1isSphere && e2isShphere) {
                     if (this.detectCollisionBetweenSpheres(entity1, entity2)) {
-                        // dispatch event if present
+                        collisionDetected = true
                         const collisionDetails = this.physicsEngine.getVelocityAfterCollision(entity1, entity2)
 
                         entity1.velocity = collisionDetails.velocity1
@@ -38,6 +41,7 @@ export default class CollisionManager {
                 }
                 else if (e1isRect && e2isShphere) {
                     if (this.detectCollisionBetweenRectAndSphere(entity1, entity2)) {
+                        collisionDetected = true
                         const collisionDetails = this.physicsEngine.getVelocityAfterCollision(entity1, entity2)
 
                         entity1.velocity = collisionDetails.velocity1
@@ -45,14 +49,48 @@ export default class CollisionManager {
                     }
                 } else if (e1isSphere && e2isRect) {
                     if (this.detectCollisionBetweenRectAndSphere(entity2, entity1)) {
+                        collisionDetected = true
                         const collisionDetails = this.physicsEngine.getVelocityAfterCollision(entity1, entity2)
 
                         entity1.velocity = collisionDetails.velocity1
                         entity2.velocity = collisionDetails.velocity2
                     }
                 }
+
+                // dispatch events
+                if (collisionDetected) {
+                    const event = this.events.find((event) => {
+                        return event.entity1 === entity1 && event.entity2 === entity2 || event.entity1 === entity2 && event.entity2 === entity1;
+                    });
+
+                    if (event)
+                        event.handler();
+                }
             }
         }
+    }
+
+    onCollision(
+        entity1: GameEntity,
+        entity2: GameEntity,
+        handler: Function
+    ) {
+        this.events.push({ entity1, entity2, handler });
+    }
+
+    off(
+        entity1: GameEntity,
+        entity2: GameEntity,
+        handler: Function
+    ) {
+        const idx = this.events.findIndex(
+            (event) =>
+                event.entity1 === entity1 &&
+                event.entity2 === entity2 &&
+                event.handler === handler
+        );
+
+        this.events.splice(idx, 1);
     }
 
     detectCollisionBetweenRects(rect1: RectEntity, rect2: RectEntity): boolean {

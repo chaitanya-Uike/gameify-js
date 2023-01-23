@@ -15,19 +15,19 @@ class PhysicsEngine {
 
         // not handling collision between RectEntities right now
         if (e1isSphere && e2isRect) {
-            const details = this.sphericalRectCollision(entity1, entity2)
+            const details = this.handleSphereRectCollision(entity1, entity2)
             return { velocity1: details.sphereVelocity, velocity2: details.rectVelocity }
         } else if (e1isRect && e2isShphere) {
-            const details = this.sphericalRectCollision(entity2, entity1)
+            const details = this.handleSphereRectCollision(entity2, entity1)
             return { velocity1: details.rectVelocity, velocity2: details.sphereVelocity }
         } else if (e1isSphere && e2isShphere) {
-            return this.spherical2DCollision(entity1, entity2)
+            return this.handleSpheresCollision(entity1, entity2)
         }
 
         return { velocity1: new Vector(), velocity2: this.nullVelocity }
     }
 
-    sphericalRectCollision(sphere: SphericalEntity, rect: RectEntity): { sphereVelocity: Vector, rectVelocity: Vector } {
+    handleSphereRectCollision(sphere: SphericalEntity, rect: RectEntity): { sphereVelocity: Vector, rectVelocity: Vector } {
         const surfaceNormal = this.getCollisionNormal(sphere.getCenter().x, sphere.getCenter().y, rect.position.x, rect.position.y, rect.width, rect.height, rect.rotation)
         const sphereVelocity = this.bounce(surfaceNormal, sphere.velocity)
 
@@ -78,7 +78,7 @@ class PhysicsEngine {
         }
     }
 
-    spherical2DCollision(entity1: SphericalEntity, entity2: SphericalEntity): { velocity1: Vector, velocity2: Vector } {
+    handleSpheresCollision(entity1: SphericalEntity, entity2: SphericalEntity): { velocity1: Vector, velocity2: Vector } {
         const xVelocityDiff = entity1.velocity.x - entity2.velocity.x;
         const yVelocityDiff = entity1.velocity.y - entity2.velocity.y;
 
