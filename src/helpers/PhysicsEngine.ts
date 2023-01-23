@@ -1,8 +1,8 @@
-import RectEntity from "./RectEntity";
-import GameEntity from "./gameEntity";
-import SphericalEntity from "./sphericalEntity";
-import { degreeToRadian } from "./utils";
-import Vector from "./vector";
+import GameEntity from "../core/gameEntity";
+import RectEntity from "../core/RectEntity";
+import SphericalEntity from "../core/sphericalEntity";
+import { degreeToRadian } from "../utils";
+import Vector from "../core/vector";
 
 class PhysicsEngine {
     nullVelocity: Vector = new Vector()

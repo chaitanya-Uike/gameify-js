@@ -1,6 +1,6 @@
-import GameEntity from "./gameEntity";
-import RectEntity from "./RectEntity";
-import SphericalEntity from "./sphericalEntity";
+import GameEntity from "../core/gameEntity";
+import RectEntity from "../core/RectEntity";
+import SphericalEntity from "../core/sphericalEntity";
 import PhysicsEngine from "./PhysicsEngine";
 
 export default class CollisionManager {

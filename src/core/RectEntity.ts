@@ -1,5 +1,5 @@
 import GameEntity from "./gameEntity";
-import { radianToDegree } from "./utils";
+import { radianToDegree } from "../utils";
 import Vector from "./vector";
 
 abstract class RectEntity extends GameEntity {

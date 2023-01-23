@@ -1,6 +1,6 @@
-import CollisionManager from "./collisionManager"
-import GameEntity from "./gameEntity"
-import KeyboardManager from "./keyboardManager"
+import CollisionManager from "./helpers/collisionManager"
+import GameEntity from "./core/gameEntity"
+import KeyboardManager from "./helpers/keyboardManager"
 
 enum GameState {
     playing,
