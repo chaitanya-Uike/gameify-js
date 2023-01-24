@@ -3,7 +3,7 @@ import RectEntity from "../core/RectEntity";
 import SphericalEntity from "../core/sphericalEntity";
 import PhysicsEngine from "./PhysicsEngine";
 
-interface CollisionEvent {
+export interface CollisionEvent {
     entity1: GameEntity;
     entity2: GameEntity;
     handler: Function
