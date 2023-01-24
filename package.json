@@ -1,15 +1,19 @@
 {
   "name": "game-engine",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Game-engine based on DOM",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build" : "tsc"
   },
   "keywords": [],
-  "author": "",
+  "author": "chaitanya-Uike",
   "license": "ISC",
   "devDependencies": {
     "typescript": "^4.9.4"
-  }
+  },
+  "files" : ["dist/**/*"]
+
 }
