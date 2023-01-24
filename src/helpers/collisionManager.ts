@@ -89,6 +89,10 @@ export default class CollisionManager {
         this.events.splice(idx, 1);
     }
 
+    unsubscribe() {
+        this.events = []
+    }
+
     detectCollisionBetweenRects(rect1: RectEntity, rect2: RectEntity): boolean {
         if (
             rect1.position.x < rect2.position.x + rect2.width &&

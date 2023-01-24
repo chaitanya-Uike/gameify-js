@@ -2,7 +2,7 @@ import CollisionManager from "./helpers/collisionManager"
 import GameEntity from "./core/gameEntity"
 import KeyboardManager from "./helpers/keyboardManager"
 
-enum GameState {
+export enum GameState {
     playing,
     paused,
     over,
@@ -64,11 +64,17 @@ export default abstract class Game {
 
     stop() {
         this.state = GameState.over
+        this.onGameOver()
     }
 
     reset() {
         this.playAreaRef.innerHTML = ""
         this.entities = []
+        this.collisionManager.unsubscribe()
+        this.keyboardManager.unsubscribe()
         this.initialize()
     }
+
+    // override this method as needed
+    onGameOver() { }
 }

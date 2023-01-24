@@ -58,4 +58,9 @@ export default class KeyboardManager {
             if (this.keyupTable[key].length === 0) delete this.keyupTable[key];
         }
     }
+
+    unsubscribe() {
+        this.keyholdTable = {}
+        this.keyupTable = {}
+    }
 }
